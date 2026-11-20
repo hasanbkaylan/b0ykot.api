@@ -119,37 +119,8 @@ def main():
     with open("dist/v1/boykotdegil-variants.txt", "w", encoding="utf-8") as f:
         f.write("\n".join(degil_variants) + "\n")
 
-    # 6. Ana sayfa (Tarayıcıdan API linkine girilirse 404 çıkmasın)
-    index_html = f"""<!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>b0ykot API</title>
-  <style>
-    body {{ font-family: system-ui, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 20px; line-height: 1.6; color: #222; }}
-    code {{ background: #f4f4f4; padding: 2px 6px; border-radius: 4px; }}
-    li {{ margin: 8px 0; }}
-  </style>
-</head>
-<body>
-  <h1>b0ykot API</h1>
-  <p>Açık kaynaklı boykot ve alternatif marka listesi API'si. (Boykot: <b>{len(boykot_list)}</b>, Boykot Değil: <b>{len(degil_list)}</b>)</p>
-  <h2>Endpointler</h2>
-  <ul>
-    <li><a href="./v1/all.json"><code>/v1/all.json</code></a> — Tüm listeler (JSON)</li>
-    <li><a href="./v1/lookup.json"><code>/v1/lookup.json</code></a> — Normalize edilmiş hızlı sorgu sözlüğü (JSON)</li>
-    <li><a href="./v1/boykot.json"><code>/v1/boykot.json</code></a> — Boykot markaları (JSON)</li>
-    <li><a href="./v1/boykotdegil.json"><code>/v1/boykotdegil.json</code></a> — Boykot olmayan markalar (JSON)</li>
-    <li><a href="./boykot.txt"><code>/boykot.txt</code></a> — Orijinal boykot listesi (TXT)</li>
-    <li><a href="./boykotdegil.txt"><code>/boykotdegil.txt</code></a> — Orijinal boykot değil listesi (TXT)</li>
-    <li><a href="./v1/boykot-variants.txt"><code>/v1/boykot-variants.txt</code></a> — Yazım varyasyonları üretilmiş boykot listesi (TXT)</li>
-  </ul>
-</body>
-</html>
-"""
-    with open("dist/index.html", "w", encoding="utf-8") as f:
-        f.write(index_html)
+    # 6. Ana sayfa şablonunu kopyala
+    shutil.copyfile("templates/index.html", "dist/index.html")
 
     print(f"Başarılı! Boykot: {len(boykot_list)}, Boykot Değil: {len(degil_list)}")
 
