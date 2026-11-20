@@ -5,55 +5,92 @@ import shutil
 import unicodedata
 from datetime import datetime, timezone
 
+TR_ASCII_MAP = str.maketrans({
+    "ç": "c", "Ç": "C",
+    "ğ": "g", "Ğ": "G",
+    "ı": "i", "İ": "I",
+    "ö": "o", "Ö": "O",
+    "ş": "s", "Ş": "S",
+    "ü": "u", "Ü": "U",
+    "é": "e", "É": "E",
+})
+
 
 def normalize(text: str) -> str:
     """Marka adını aksansız, boşluksuz ve küçük harfli standart anahtara çevirir."""
-    text = text.replace("İ", "i").replace("I", "i").replace("ı", "i").lower()
+    text = text.translate(TR_ASCII_MAP).replace("I", "i").lower()
     text = unicodedata.normalize("NFKD", text)
     text = "".join(c for c in text if not unicodedata.combining(c))
     return re.sub(r"[^a-z0-9]", "", text)
 
 
-def load_brands(filename: str) -> dict[str, str]:
-    brands: dict[str, str] = {}
+def load_brands(filename: str) -> dict[str, list[str]]:
+    """Aynı markanın dosyadaki tüm farklı yazımlarını kaybetmeden toplar."""
+    brands: dict[str, list[str]] = {}
     with open(filename, "r", encoding="utf-8") as f:
         for line in f:
             raw = line.strip()
             if not raw or raw.startswith("#"):
                 continue
             key = normalize(raw)
-            if key and key not in brands:
-                brands[key] = raw
+            if not key:
+                continue
+            if key not in brands:
+                brands[key] = []
+            if raw not in brands[key]:
+                brands[key].append(raw)
     return brands
 
 
+def pick_preferred_name(names: list[str]) -> str:
+    """Aynı markanın birden fazla yazımı varsa en düzgün/aksanlı olanı ana isim seçer."""
+    return max(
+        names,
+        key=lambda s: (
+            any(ord(c) > 127 for c in s),
+            any(c in "-'’ " for c in s),
+            len(s),
+        ),
+    )
+
+
 def generate_variants(name: str) -> list[str]:
-    """Tireli, boşluklu, kesme işaretsiz ve aksansız yazım varyasyonları üretir."""
+    """Türkçe karakterli, aksansız, tireli, boşluklu ve kesme işaretsiz varyasyonlar üretir."""
+    normalized_quote = name.replace("’", "'")
     bases = {
         name,
+        normalized_quote,
         name.replace("-", " "),
         name.replace("-", ""),
-        name.replace("'", "").replace("’", ""),
-        name.replace("-", " ").replace("'", "").replace("’", ""),
-        name.replace("-", "").replace("'", "").replace("’", ""),
+        normalized_quote.replace("'", ""),
+        normalized_quote.replace("-", " ").replace("'", ""),
+        normalized_quote.replace("-", "").replace("'", ""),
     }
+
     variants = set()
     for item in bases:
+        if not item:
+            continue
         variants.add(item)
-        # Aksanları kaldır (é -> e, ü -> u vb.)
-        no_accent = "".join(
+        # Türkçe karakterleri ve aksanları temizle (ç->c, ş->s, ğ->g, ü->u, ö->o, ı->i, é->e)
+        ascii_item = item.translate(TR_ASCII_MAP)
+        ascii_item = "".join(
             c
-            for c in unicodedata.normalize("NFKD", item)
+            for c in unicodedata.normalize("NFKD", ascii_item)
             if not unicodedata.combining(c)
         )
-        no_accent = no_accent.replace("ı", "i").replace("İ", "I")
-        variants.add(no_accent)
-    return sorted(v for v in variants if v)
+        if ascii_item:
+            variants.add(ascii_item)
+
+    return sorted(variants)
 
 
 def main():
-    boykot = load_brands("boykot.txt")
-    boykot_degil = load_brands("boykotdegil.txt")
+    boykot_raw = load_brands("boykot.txt")
+    degil_raw = load_brands("boykotdegil.txt")
+
+    boykot = {k: pick_preferred_name(v) for k, v in boykot_raw.items()}
+    boykot_degil = {k: pick_preferred_name(v) for k, v in degil_raw.items()}
 
     # Çakışma kontrolü (aynı marka iki listede birden olamaz)
     conflicts = set(boykot.keys()) & set(boykot_degil.keys())
@@ -103,13 +140,13 @@ def main():
     with open("dist/v1/lookup.json", "w", encoding="utf-8") as f:
         json.dump(lookup, f, ensure_ascii=False, indent=2)
 
-    # 5. Otomatik varyasyonlu txt dosyaları
+    # 5. Otomatik varyasyonlu txt dosyaları (Dosyadaki tüm yazımları da kapsar)
     boykot_variants = sorted(
-        {v for name in boykot_list for v in generate_variants(name)},
+        {v for names in boykot_raw.values() for name in names for v in generate_variants(name)},
         key=lambda s: s.casefold(),
     )
     degil_variants = sorted(
-        {v for name in degil_list for v in generate_variants(name)},
+        {v for names in degil_raw.values() for name in names for v in generate_variants(name)},
         key=lambda s: s.casefold(),
     )
 
@@ -122,7 +159,10 @@ def main():
     # 6. Ana sayfa şablonunu kopyala
     shutil.copyfile("templates/index.html", "dist/index.html")
 
-    print(f"Başarılı! Boykot: {len(boykot_list)}, Boykot Değil: {len(degil_list)}")
+    print(
+        f"Başarılı! Boykot: {len(boykot_list)} ({len(boykot_variants)} varyasyon), "
+        f"Boykot Değil: {len(degil_list)} ({len(degil_variants)} varyasyon)"
+    )
 
 
 if __name__ == "__main__":
