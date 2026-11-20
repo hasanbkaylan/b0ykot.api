@@ -11,10 +11,8 @@
       --md-surface-container-high: #e6e4ee;
       --md-on-surface: #1a1b21;
       --md-on-surface-variant: #45464f;
-      --md-outline: #767680;
       --md-outline-variant: #c6c5d0;
       --md-primary: #3b5ba9;
-      --md-on-primary: #ffffff;
       --md-primary-container: #dae2ff;
       --md-on-primary-container: #001848;
       --md-boykot-bg: #ffdad6;
@@ -30,10 +28,8 @@
         --md-surface-container-high: #292a32;
         --md-on-surface: #e3e2e9;
         --md-on-surface-variant: #c6c5d0;
-        --md-outline: #90909a;
         --md-outline-variant: #45464f;
         --md-primary: #b2c5ff;
-        --md-on-primary: #002b73;
         --md-primary-container: #20428f;
         --md-on-primary-container: #dae2ff;
         --md-boykot-bg: #5c1916;
@@ -63,7 +59,6 @@
       padding-bottom: 40px;
     }
 
-    /* Top Bar */
     header {
       display: flex;
       justify-content: space-between;
@@ -92,7 +87,6 @@
     }
     .gh-btn:active { opacity: 0.75; }
 
-    /* Hero Card */
     .hero-card {
       background: var(--md-surface-container);
       border-radius: 28px;
@@ -123,7 +117,6 @@
     .chip-boykot { background: var(--md-boykot-bg); color: var(--md-boykot-text); }
     .chip-degil { background: var(--md-degil-bg); color: var(--md-degil-text); }
 
-    /* MD3 Search Bar */
     .search-box {
       position: relative;
       display: flex;
@@ -162,7 +155,6 @@
       border-radius: 50%;
     }
 
-    /* Search Results */
     #results {
       display: flex;
       flex-direction: column;
@@ -196,7 +188,6 @@
       border-radius: 20px;
     }
 
-    /* Section Title */
     .section-title {
       font-size: 1.1rem;
       font-weight: 600;
@@ -204,7 +195,6 @@
       margin-top: 4px;
     }
 
-    /* Endpoint List Card */
     .endpoint-list {
       background: var(--md-surface-container);
       border-radius: 24px;
@@ -272,12 +262,11 @@
       </div>
     </section>
 
-    <!-- Canlı Marka Arama -->
     <div class="search-box">
       <svg class="search-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
       </svg>
-      <input id="search-input" type="text" placeholder="Marka ara (örn. Nestlé, Eti, Burger King)..." autocomplete="off" />
+      <input id="search-input" type="text" placeholder="Marka ara (örn. Nestlé, Çaykur, Şölen)..." autocomplete="off" />
       <button id="clear-btn" class="clear-btn" aria-label="Temizle">✕</button>
     </div>
 
@@ -295,14 +284,23 @@
       { path: "/v1/boykotdegil.json", desc: "Boykot olmayan markalar (JSON)" },
       { path: "/boykot.txt", desc: "Orijinal boykot listesi (TXT)" },
       { path: "/boykotdegil.txt", desc: "Orijinal boykot değil listesi (TXT)" },
-      { path: "/v1/boykot-variants.txt", desc: "Yazım varyasyonlu boykot listesi (TXT)" }
+      { path: "/v1/boykot-variants.txt", desc: "Yazım varyasyonlu boykot listesi (TXT)" },
+      { path: "/v1/boykotdegil-variants.txt", desc: "Yazım varyasyonlu boykot değil listesi (TXT)" }
     ];
+
+    const trMap = {
+      "ç": "c", "Ç": "c",
+      "ğ": "g", "Ğ": "g",
+      "ı": "i", "İ": "i", "I": "i",
+      "ö": "o", "Ö": "o",
+      "ş": "s", "Ş": "s",
+      "ü": "u", "Ü": "u",
+      "é": "e", "É": "e"
+    };
 
     const normalize = (text) =>
       text
-        .replace(/İ/g, "i")
-        .replace(/I/g, "i")
-        .replace(/ı/g, "i")
+        .replace(/[çÇğĞıİIöÖşŞüÜéÉ]/g, (ch) => trMap[ch] || ch)
         .toLowerCase()
         .normalize("NFKD")
         .replace(/[\u0300-\u036f]/g, "")
@@ -394,4 +392,4 @@
     });
   </script>
 </body>
-  </html>
+</html>
