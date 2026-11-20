@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="136" height="36" viewBox="0 0 136 36" role="img" aria-label="Marka Öner">
+  <rect width="136" height="36" rx="18" fill="#FFD9D6"/>
+  <g transform="translate(14, 9) scale(0.75)" fill="none" stroke="#8C0009" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <path d="M12 8v8"/>
+    <path d="M8 12h8"/>
+  </g>
+  <text x="40" y="23" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#8C0009">Marka Öner</text>
+</svg>
