@@ -183,11 +183,7 @@
       transition: transform 0.25s var(--spring), background-color 0.2s, border-radius 0.25s var(--spring);
     }
 
-    .tool-btn.icon-only {
-      width: 40px;
-      padding: 0;
-    }
-
+    .tool-btn.icon-only { width: 40px; padding: 0; }
     .tool-btn:hover { background: var(--md-surface-container-highest); }
 
     .tool-btn:active {
@@ -540,6 +536,12 @@
 
     .modal-title { font-size: 1.25rem; font-weight: 760; letter-spacing: -0.02em; }
 
+    .modal-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .close-btn {
       width: 40px;
       height: 40px;
@@ -556,12 +558,132 @@
 
     .close-btn:active { transform: scale(0.9); }
 
+    /* 3-Second Hold-to-Fill Developer Mode Button */
+    .hold-icon-btn {
+      position: relative;
+      overflow: hidden;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: var(--md-surface-container-high);
+      color: var(--md-on-surface-variant);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      touch-action: none;
+      transition: transform 0.25s var(--spring), border-radius 0.25s var(--spring);
+    }
+
+    .hold-icon-btn .hold-fill {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 0%;
+      background: var(--md-primary);
+      transition: height 0.2s ease-out;
+      z-index: 0;
+    }
+
+    .hold-icon-btn svg {
+      position: relative;
+      z-index: 1;
+      transition: color 0.3s ease;
+    }
+
+    .hold-icon-btn.holding {
+      transform: scale(0.92);
+      border-radius: 14px;
+    }
+
+    .hold-icon-btn.holding .hold-fill {
+      height: 100%;
+      transition: height 3s linear;
+    }
+
+    .hold-icon-btn.holding svg {
+      color: var(--md-on-primary);
+      transition: color 0.3s ease 1.3s;
+    }
+
+    .hold-icon-btn.unlocked-pop { animation: unlockPop 0.4s var(--spring); }
+
+    @keyframes unlockPop {
+      0% { transform: scale(0.9); }
+      50% { transform: scale(1.16); }
+      100% { transform: scale(1); }
+    }
+
+    .hold-icon-btn.has-token {
+      background: var(--md-degil-bg);
+      color: var(--md-degil-text);
+    }
+
     .modal-body {
       padding: 18px 22px 26px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 14px;
+    }
+
+    /* Hidden Developer Token Drawer */
+    .token-drawer {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      background: var(--md-surface-container);
+      border-radius: 22px;
+      padding: 14px 16px;
+      border: 1.5px solid var(--md-primary-container);
+      animation: popIn 0.25s var(--spring);
+    }
+
+    .token-drawer.open { display: flex; }
+
+    .token-drawer-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .token-hide-btn {
+      border: none;
+      background: var(--md-surface-container-highest);
+      color: var(--md-on-surface-variant);
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .token-row { display: flex; gap: 8px; }
+    .token-row .md-input { padding: 10px 14px; font-size: 0.85rem; }
+
+    .token-save-btn {
+      flex-shrink: 0;
+      border: none;
+      background: var(--md-primary-container);
+      color: var(--md-on-primary-container);
+      padding: 0 16px;
+      border-radius: 9999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .token-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      background: var(--md-degil-bg);
+      color: var(--md-degil-text);
     }
 
     /* Bulk Add Form Elements */
@@ -626,11 +748,7 @@
       gap: 10px;
     }
 
-    .preview-stats {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
+    .preview-stats { display: flex; flex-wrap: wrap; gap: 6px; }
 
     .mini-pill {
       padding: 4px 10px;
@@ -690,54 +808,6 @@
     }
 
     .pr-status-card a { color: inherit; font-weight: 760; }
-
-    .token-panel {
-      background: var(--md-surface-container);
-      border-radius: 20px;
-      padding: 12px 16px;
-    }
-
-    .token-panel summary {
-      cursor: pointer;
-      font-size: 0.84rem;
-      font-weight: 700;
-      color: var(--md-on-surface-variant);
-      list-style: none;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .token-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .token-row .md-input { padding: 10px 14px; font-size: 0.85rem; }
-
-    .token-save-btn {
-      flex-shrink: 0;
-      border: none;
-      background: var(--md-primary-container);
-      color: var(--md-on-primary-container);
-      padding: 0 16px;
-      border-radius: 9999px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .token-badge {
-      display: inline-block;
-      margin-top: 8px;
-      padding: 3px 10px;
-      border-radius: 9999px;
-      font-size: 0.76rem;
-      font-weight: 700;
-      background: var(--md-degil-bg);
-      color: var(--md-degil-text);
-    }
 
     /* History Timeline Cards */
     .history-card {
@@ -801,6 +871,44 @@
       font-size: 0.8rem;
       font-weight: 650;
       cursor: pointer;
+    }
+
+    .history-footer {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-top: 2px;
+    }
+
+    .history-author {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 3px 4px 3px 10px;
+      border-radius: 9999px;
+      background: var(--md-surface-container-high);
+      color: var(--md-on-surface-variant);
+      text-decoration: none;
+      font-size: 0.76rem;
+      font-weight: 650;
+      transition: background-color 0.2s, transform 0.2s var(--spring);
+    }
+
+    .history-author:hover {
+      background: var(--md-surface-container-highest);
+    }
+
+    .history-author:active {
+      transform: scale(0.95);
+    }
+
+    .history-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      background: var(--md-surface-container-highest);
     }
 
     /* Info Dialog Cards */
@@ -959,9 +1067,36 @@
     <div class="modal-sheet compact">
       <div class="modal-header">
         <h2 id="bulk-modal-title" class="modal-title">Toplu Marka Ekle</h2>
-        <button class="close-btn" type="button" data-close="bulk-modal" aria-label="Kapat">✕</button>
+        <div class="modal-header-actions">
+          <button id="dev-hold-btn" class="hold-icon-btn" type="button" title="Geliştirici Modu (3 sn basılı tut)" aria-label="Geliştirici Modu için 3 saniye basılı tutun">
+            <span class="hold-fill" aria-hidden="true"></span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"/>
+              <path d="m21 2-9.6 9.6"/>
+              <circle cx="7.5" cy="15.5" r="5.5"/>
+            </svg>
+          </button>
+          <button class="close-btn" type="button" data-close="bulk-modal" aria-label="Kapat">✕</button>
+        </div>
       </div>
+
       <div class="modal-body">
+        <!-- 3 sn basılı tutunca açılan Geliştirici Modu -->
+        <div id="token-drawer" class="token-drawer">
+          <div class="token-drawer-head">
+            <span>Geliştirici Modu (Direkt PR)</span>
+            <button id="token-hide-btn" class="token-hide-btn" type="button">Gizle</button>
+          </div>
+          <p style="font-size: 0.78rem; color: var(--md-on-surface-variant);">
+            Bu repoya yetkili Fine-grained Token girin (yalnızca bu cihazda saklanır).
+          </p>
+          <div class="token-row">
+            <input id="gh-token-input" class="md-input mono" type="password" placeholder="github_pat_..." autocomplete="off" />
+            <button id="gh-token-save" class="token-save-btn" type="button">Kaydet</button>
+          </div>
+          <div id="token-status"></div>
+        </div>
+
         <div>
           <span class="field-label">Hedef Liste</span>
           <div class="seg-group">
@@ -994,21 +1129,6 @@
         <button id="bulk-fallback-btn" class="secondary-cta" type="button" style="display: none;">
           GitHub Formu ile Aç
         </button>
-
-        <details class="token-panel">
-          <summary>
-            <span>Geliştirici / Yönetici Modu (Token ile Direkt PR)</span>
-            <span id="token-state-icon">▾</span>
-          </summary>
-          <p style="font-size: 0.8rem; color: var(--md-on-surface-variant); margin-top: 8px;">
-            Siteden çıkmadan doğrudan PR açmak için bu repoya yetkili Fine-grained Token girebilirsiniz (yalnızca bu tarayıcıda saklanır).
-          </p>
-          <div class="token-row">
-            <input id="gh-token-input" class="md-input mono" type="password" placeholder="github_pat_..." autocomplete="off" />
-            <button id="gh-token-save" class="token-save-btn" type="button">Kaydet</button>
-          </div>
-          <div id="token-status"></div>
-        </details>
       </div>
     </div>
   </div>
@@ -1259,6 +1379,10 @@
     function closeModal(id) {
       document.getElementById(id).classList.remove("open");
       document.body.style.overflow = "";
+      if (id === "bulk-modal") {
+        tokenDrawer.classList.remove("open");
+        cancelHold();
+      }
     }
 
     document.querySelectorAll("[data-close]").forEach((btn) => {
@@ -1286,6 +1410,42 @@
       if (!historyLoaded) loadHistory();
     });
 
+    // 3-Second Hold Developer Button
+    const devHoldBtn = document.getElementById("dev-hold-btn");
+    const tokenDrawer = document.getElementById("token-drawer");
+    const tokenHideBtn = document.getElementById("token-hide-btn");
+    let holdTimer = null;
+
+    function startHold(e) {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      e.preventDefault();
+      clearTimeout(holdTimer);
+      devHoldBtn.classList.add("holding");
+      holdTimer = setTimeout(() => {
+        devHoldBtn.classList.remove("holding");
+        devHoldBtn.classList.add("unlocked-pop");
+        setTimeout(() => devHoldBtn.classList.remove("unlocked-pop"), 450);
+        navigator.vibrate?.(40);
+        tokenDrawer.classList.toggle("open");
+        if (tokenDrawer.classList.contains("open")) {
+          tokenInput.focus();
+        }
+      }, 3000);
+    }
+
+    function cancelHold() {
+      clearTimeout(holdTimer);
+      holdTimer = null;
+      devHoldBtn.classList.remove("holding");
+    }
+
+    devHoldBtn.addEventListener("pointerdown", startHold);
+    devHoldBtn.addEventListener("pointerup", cancelHold);
+    devHoldBtn.addEventListener("pointercancel", cancelHold);
+    devHoldBtn.addEventListener("pointerleave", cancelHold);
+    devHoldBtn.addEventListener("contextmenu", (e) => e.preventDefault());
+    tokenHideBtn.addEventListener("click", () => tokenDrawer.classList.remove("open"));
+
     // Bulk Add & Hybrid PR Logic
     let targetStatus = "boykot";
     let analyzedNewBrands = [];
@@ -1312,12 +1472,14 @@
         tokenSaveBtn.textContent = "Sil";
         bulkPrimaryBtn.textContent = "Siteden Direkt PR Aç";
         bulkFallbackBtn.style.display = "block";
+        devHoldBtn.classList.add("has-token");
       } else {
         tokenInput.value = "";
         tokenStatusEl.innerHTML = "";
         tokenSaveBtn.textContent = "Kaydet";
         bulkPrimaryBtn.textContent = "GitHub Üzerinden Öneri (PR) Gönder";
         bulkFallbackBtn.style.display = "none";
+        devHoldBtn.classList.remove("has-token");
       }
     }
 
@@ -1329,6 +1491,7 @@
         const val = tokenInput.value.trim();
         if (!val) return;
         localStorage.setItem(TOKEN_KEY, val);
+        tokenDrawer.classList.remove("open");
       }
       updateTokenUI();
     });
@@ -1657,6 +1820,32 @@
           const dSec = createDiffSection("Boykot Değil Listesi", u.boykot_degil.added, u.boykot_degil.removed);
           if (bSec) card.appendChild(bSec);
           if (dSec) card.appendChild(dSec);
+
+          if (u.author && (u.author.avatar_url || u.author.login)) {
+            const footer = document.createElement("div");
+            footer.className = "history-footer";
+
+            const authorLink = document.createElement("a");
+            authorLink.className = "history-author";
+            authorLink.href = `https://github.com/${u.author.login || REPO_OWNER}`;
+            authorLink.target = "_blank";
+            authorLink.rel = "noopener";
+            authorLink.title = `@${u.author.login}`;
+
+            const nameSpan = document.createElement("span");
+            nameSpan.textContent = `@${u.author.login}`;
+
+            const avatar = document.createElement("img");
+            avatar.className = "history-avatar";
+            avatar.src = u.author.avatar_url || `https://github.com/${u.author.login}.png?size=64`;
+            avatar.alt = "";
+            avatar.loading = "lazy";
+            avatar.onerror = () => { avatar.style.display = "none"; };
+
+            authorLink.append(nameSpan, avatar);
+            footer.appendChild(authorLink);
+            card.appendChild(footer);
+          }
 
           body.appendChild(card);
         });
