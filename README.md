@@ -2,20 +2,17 @@
 
 <img src="assets/banner.svg" alt="b0ykot.api" width="100%" />
 
-<br/>
+<br/><br/>
 
 <p align="center">
   <a href="https://hasanbkaylan.github.io/b0ykot.api/">
-    <img height="30" alt="JSON API" src="https://ziadoua.github.io/m3-Markdown-Badges/badges/JSON/json2.svg" />
-  </a>
-  <a href="https://github.com/hasanbkaylan/b0ykot.api/stargazers">
-    <img height="30" alt="Stars" src="https://m3-markdown-badges.vercel.app/stars/1/2/hasanbkaylan/b0ykot.api" />
-  </a>
-  <a href="https://github.com/hasanbkaylan/b0ykot.api/issues/new/choose">
-    <img height="30" alt="Issues" src="https://m3-markdown-badges.vercel.app/issues/1/2/hasanbkaylan/b0ykot.api" />
+    <img height="34" alt="Canlı Site & Arama" src="assets/badge-live.svg" />
   </a>
   <a href="LICENSE">
-    <img height="30" alt="MIT License" src="https://ziadoua.github.io/m3-Markdown-Badges/badges/LicenceMIT/licencemit2.svg" />
+    <img height="34" alt="Lisans: MIT" src="assets/badge-license.svg" />
+  </a>
+  <a href="https://github.com/hasanbkaylan/b0ykot.api/issues/new/choose">
+    <img height="34" alt="Marka Öner" src="assets/badge-suggest.svg" />
   </a>
 </p>
 
