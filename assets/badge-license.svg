@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="134" height="36" viewBox="0 0 134 36" role="img" aria-label="Lisans: MIT">
+  <rect width="134" height="36" rx="18" fill="#C2F0CF"/>
+  <g transform="translate(14, 9) scale(0.75)" fill="none" stroke="#064E24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    <path d="m9 12 2 2 4-4"/>
+  </g>
+  <text x="40" y="23" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#064E24">Lisans: MIT</text>
+</svg>
