@@ -1,0 +1,30 @@
+name: Marka Ekleme / Düzeltme Talebi
+description: Listeye yeni bir marka eklemek veya mevcut listede düzeltme talep etmek için kullanın.
+title: "[Marka Önerisi]: "
+labels: ["marka-önerisi"]
+body:
+  - type: input
+    id: brand
+    attributes:
+      label: Marka Adı
+      placeholder: Örn. Marka X
+    validations:
+      required: true
+
+  - type: dropdown
+    id: status
+    attributes:
+      label: Hangi listeye eklenmeli / taşınmalı?
+      options:
+        - boykot.txt (Boykot)
+        - boykotdegil.txt (Boykot Değil)
+    validations:
+      required: true
+
+  - type: textarea
+    id: source
+    attributes:
+      label: Açıklama / Kaynak
+      description: Markanın kime ait olduğu veya neden bu listede yer alması gerektiğine dair bilgi/link paylaşın.
+    validations:
+      required: true
