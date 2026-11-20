@@ -16,21 +16,25 @@ CORS dostudur; tarayıcı eklentilerinden, mobil uygulamalardan ve backend servi
 | **JSON** | `https://hasanbkaylan.github.io/b0ykot.api/v1/boykotdegil.json` | Sadece boykot olmayan markalar |
 | **TXT** | `https://hasanbkaylan.github.io/b0ykot.api/boykot.txt` | Ham boykot listesi |
 | **TXT** | `https://hasanbkaylan.github.io/b0ykot.api/boykotdegil.txt` | Ham boykot değil listesi |
-| **TXT** | `https://hasanbkaylan.github.io/b0ykot.api/v1/boykot-variants.txt` | Otomatik üretilmiş yazım varyasyonlu liste |
+| **TXT** | `https://hasanbkaylan.github.io/b0ykot.api/v1/boykot-variants.txt` | Yazım varyasyonlu boykot listesi |
+| **TXT** | `https://hasanbkaylan.github.io/b0ykot.api/v1/boykotdegil-variants.txt` | Yazım varyasyonlu boykot değil listesi |
 
 ---
 
 ## Yazım Farklılıklarını Yakalama
 
-Market verilerinde marka isimleri bazen aksanlı (`Nestlé`), bazen tireli (`Burger-King`), bazen bitişik (`BurgerKing`) gelebilir. Bunu çözmek için `/v1/lookup.json` dosyasını kullanabilirsiniz.
+Market verilerinde marka isimleri bazen Türkçe karakterli/aksanlı (`Nestlé`, `Çaykur`, `Şölen`), bazen tireli (`Burger-King`), bazen bitişik (`BurgerKing`) gelebilir. Bunu çözmek için `/v1/lookup.json` dosyasını kullanabilirsiniz.
 
 ### JavaScript / Tarayıcı Örneği
 ```javascript
+const trMap = {
+  "ç": "c", "Ç": "c", "ğ": "g", "Ğ": "g", "ı": "i", "İ": "i",
+  "I": "i", "ö": "o", "Ö": "o", "ş": "s", "Ş": "s", "ü": "u", "Ü": "u", "é": "e", "É": "e"
+};
+
 const normalize = (text) =>
   text
-    .replace(/İ/g, "i")
-    .replace(/I/g, "i")
-    .replace(/ı/g, "i")
+    .replace(/[çÇğĞıİIöÖşŞüÜéÉ]/g, (ch) => trMap[ch] || ch)
     .toLowerCase()
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")
@@ -39,7 +43,7 @@ const normalize = (text) =>
 const res = await fetch("https://hasanbkaylan.github.io/b0ykot.api/v1/lookup.json");
 const lookup = await res.json();
 
-const marketMarkasi = "NESTLÉ"; // veya "Burger King", "Domino’s"
+const marketMarkasi = "NESTLÉ"; // veya "Burger King", "Çaykur", "Şölen"
 const sonuc = lookup[normalize(marketMarkasi)];
 
 console.log(sonuc);
@@ -52,17 +56,22 @@ import re
 import unicodedata
 import requests
 
+TR_MAP = str.maketrans({
+    "ç": "c", "Ç": "c", "ğ": "g", "Ğ": "g", "ı": "i", "İ": "i",
+    "I": "i", "ö": "o", "Ö": "o", "ş": "s", "Ş": "s", "ü": "u", "Ü": "u", "é": "e", "É": "e"
+})
+
 def normalize(text: str) -> str:
-    text = text.replace("İ", "i").replace("I", "i").replace("ı", "i").lower()
+    text = text.translate(TR_MAP).lower()
     text = unicodedata.normalize("NFKD", text)
     text = "".join(c for c in text if not unicodedata.combining(c))
     return re.sub(r"[^a-z0-9]", "", text)
 
 lookup = requests.get("https://hasanbkaylan.github.io/b0ykot.api/v1/lookup.json").json()
 
-sonuc = lookup.get(normalize("Burger King"))
+sonuc = lookup.get(normalize("Çaykur"))
 print(sonuc)
-# Çıktı: {'name': 'Burger-King', 'status': 'boykot'}
+# Çıktı: {'name': 'Çaykur', 'status': 'boykot_degil'}
 ```
 
 ---
