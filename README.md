@@ -2,7 +2,7 @@
 
 <img src="assets/banner.svg" alt="b0ykot.api" width="100%" />
 
-<br/><br/>
+<br/>
 
 [![Canlı Web & Arama](https://img.shields.io/badge/Canlı_Site_%26_Arama-b0ykot.api-3056D3?style=for-the-badge)](https://hasanbkaylan.github.io/b0ykot.api/)
 [![Lisans](https://img.shields.io/badge/Lisans-MIT-064E24?style=for-the-badge)](LICENSE)
