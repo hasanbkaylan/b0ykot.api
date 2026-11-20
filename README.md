@@ -1,31 +1,105 @@
-# b0ykot.api
+<div align="center">
 
-Türkiye'deki market ve e-ticaret ürünlerinde kullanılan markalar için topluluk destekli, açık kaynaklı **boykot / alternatif marka** veri tabanı ve ücretsiz Statik JSON API'si.
+<img src="assets/banner.svg" alt="b0ykot.api" width="100%" />
 
-Verilerin ana kaynağı kök dizindeki sade `boykot.txt` ve `boykotdegil.txt` dosyalarıdır. Her güncellemede GitHub Actions tarafından otomatik olarak doğrulanır, yazım varyasyonları üretilir ve JSON API olarak yayınlanır.
+<br/><br/>
 
-## API Uç Noktaları (Endpoints)
+[![Canlı Web & Arama](https://img.shields.io/badge/Canlı_Site_%26_Arama-b0ykot.api-3056D3?style=for-the-badge)](https://hasanbkaylan.github.io/b0ykot.api/)
+[![Lisans](https://img.shields.io/badge/Lisans-MIT-064E24?style=for-the-badge)](LICENSE)
+[![Katkı](https://img.shields.io/badge/Marka_Öner-Issues-8C0009?style=for-the-badge)](https://github.com/hasanbkaylan/b0ykot.api/issues/new/choose)
 
-CORS dostudur; tarayıcı eklentilerinden, mobil uygulamalardan ve backend servislerinden limitsiz ve API anahtarı (API Key) olmadan doğrudan çekilebilir.
+</div>
 
-| Format | Adres | Açıklama |
-| :--- | :--- | :--- |
-| **JSON** | `https://hasanbkaylan.github.io/b0ykot.api/v1/all.json` | Tüm markalar ve güncelleme tarihi |
-| **JSON** | `https://hasanbkaylan.github.io/b0ykot.api/v1/lookup.json` | Hızlı arama sözlüğü (normalize edilmiş anahtarlar) |
-| **JSON** | `https://hasanbkaylan.github.io/b0ykot.api/v1/boykot.json` | Sadece boykot markaları |
-| **JSON** | `https://hasanbkaylan.github.io/b0ykot.api/v1/boykotdegil.json` | Sadece boykot olmayan markalar |
-| **TXT** | `https://hasanbkaylan.github.io/b0ykot.api/boykot.txt` | Ham boykot listesi |
-| **TXT** | `https://hasanbkaylan.github.io/b0ykot.api/boykotdegil.txt` | Ham boykot değil listesi |
-| **TXT** | `https://hasanbkaylan.github.io/b0ykot.api/v1/boykot-variants.txt` | Yazım varyasyonlu boykot listesi |
-| **TXT** | `https://hasanbkaylan.github.io/b0ykot.api/v1/boykotdegil-variants.txt` | Yazım varyasyonlu boykot değil listesi |
+> [!IMPORTANT]
+> **Bu proje Filistin'i desteklemektedir.**
+> Kök dizindeki `boykot.txt` ve `boykotdegil.txt` dosyaları her güncellemede GitHub Actions tarafından otomatik olarak klonlardan arındırılır, sıralanır ve ücretsiz Statik JSON/TXT API olarak yayınlanır.
 
 ---
 
-## Yazım Farklılıklarını Yakalama
+## Hızlı Bakış
 
-Market verilerinde marka isimleri bazen Türkçe karakterli/aksanlı (`Nestlé`, `Çaykur`, `Şölen`), bazen tireli (`Burger-King`), bazen bitişik (`BurgerKing`) gelebilir. Bunu çözmek için `/v1/lookup.json` dosyasını kullanabilirsiniz.
+- **Canlı Arama & Geçmiş:** [hasanbkaylan.github.io/b0ykot.api](https://hasanbkaylan.github.io/b0ykot.api/) üzerinden anında marka arayabilir, **Geçmiş** butonundan tarih tarih eklenen/çıkarılan markaları inceleyebilirsiniz.
+- **Sıfır Kurulum & CORS Dostu:** API anahtarı (API Key) ve rate limit olmadan tarayıcıdan, mobil uygulamadan veya backend'den doğrudan çekilebilir.
+- **Akıllı Yazım Eşleştirme:** Market sitelerindeki `Nestlé` / `Nestle`, `Burger King` / `Burger-King`, `Çaykur` / `Caykur` farklarını otomatik yakalar.
 
-### JavaScript / Tarayıcı Örneği
+---
+
+<details open>
+<summary><b>📡 API Uç Noktaları (Endpoints)</b></summary>
+
+<br/>
+
+**Ana Adres:** `https://hasanbkaylan.github.io/b0ykot.api`
+
+| Format | Yol |
+| :--- | :--- |
+| **JSON** *(Önerilen)* | [`/v1/lookup.json`](https://hasanbkaylan.github.io/b0ykot.api/v1/lookup.json) |
+| **JSON** *(Tüm Veri)* | [`/v1/all.json`](https://hasanbkaylan.github.io/b0ykot.api/v1/all.json) |
+| **JSON** *(Geçmiş)* | [`/v1/history.json`](https://hasanbkaylan.github.io/b0ykot.api/v1/history.json) |
+| **JSON** *(Boykot)* | [`/v1/boykot.json`](https://hasanbkaylan.github.io/b0ykot.api/v1/boykot.json) |
+| **JSON** *(Boykot Değil)* | [`/v1/boykotdegil.json`](https://hasanbkaylan.github.io/b0ykot.api/v1/boykotdegil.json) |
+| **TXT** *(Temiz Boykot)* | [`/boykot.txt`](https://hasanbkaylan.github.io/b0ykot.api/boykot.txt) |
+| **TXT** *(Temiz Boykot Değil)* | [`/boykotdegil.txt`](https://hasanbkaylan.github.io/b0ykot.api/boykotdegil.txt) |
+| **TXT** *(Varyasyonlu Boykot)* | [`/v1/boykot-variants.txt`](https://hasanbkaylan.github.io/b0ykot.api/v1/boykot-variants.txt) |
+| **TXT** *(Varyasyonlu Boykot Değil)* | [`/v1/boykotdegil-variants.txt`](https://hasanbkaylan.github.io/b0ykot.api/v1/boykotdegil-variants.txt) |
+
+</details>
+
+---
+
+<details>
+<summary><b>🤖 Yapay Zeka Asistanı İçin Hazır Entegrasyon & Güncelleme Promptu</b></summary>
+
+<br/>
+
+> [!TIP]
+> Kendi uygulamanıza (Flutter, React, Next.js, Kotlin, Swift, Python, Chrome Eklentisi vb.) **b0ykot.api** desteğini eklemek veya mevcut entegrasyonu güncellemek için aşağıdaki promptu kopyalayıp yapay zeka asistanınıza (ChatGPT, Claude, Gemini, Cursor vb.) yapıştırın.
+
+```text
+Projeme "b0ykot.api" açık kaynak boykot marka listesi API'sini entegre et (veya mevcut entegrasyonu buna göre güncelle):
+
+1. Veri Kaynakları (CORS açık, API Key gerektirmez):
+   - Hızlı sorgulama sözlüğü: https://hasanbkaylan.github.io/b0ykot.api/v1/lookup.json
+   - Tüm listeler, toplam sayılar ve son güncelleme tarihi: https://hasanbkaylan.github.io/b0ykot.api/v1/all.json
+   - Değişiklik geçmişi (tarih tarih eklenen/çıkarılanlar): https://hasanbkaylan.github.io/b0ykot.api/v1/history.json
+
+2. JSON Yapıları:
+   - lookup.json formatı:
+     {
+       "nestle": { "name": "Nestlé", "status": "boykot" },
+       "caykur": { "name": "Çaykur", "status": "boykot_degil" }
+     }
+   - all.json formatı:
+     {
+       "updated_at": "ISO-8601-UTC",
+       "counts": { "boykot": 132, "boykot_degil": 71 },
+       "boykot": ["..."],
+       "boykot_degil": ["..."]
+     }
+
+3. Marka Eşleştirme (Normalizasyon) Kuralı:
+   Marka adını sorgulamadan önce şu adımlarla normalize et:
+   - Türkçe/aksanlı karakterleri dönüştür: ç->c, ğ->g, ı->i, İ->i, I->i, ö->o, ş->s, ü->u, é->e
+   - Küçük harfe çevir, Unicode NFKD ile kalan aksanları temizle
+   - Harf ve rakam dışındaki tüm karakterleri (boşluk, tire, kesme işareti vb.) sil: [^a-z0-9]
+   - Örnek: "Burger King" -> "burgerking", "NESTLÉ" -> "nestle", "Domino’s" -> "dominos"
+   - Ardından lookup[normalizedKey] ile anında sorgula.
+
+4. Performans ve Güncelleme Davranışı:
+   - Uygulama açılışında veya belirli aralıklarla veriyi çek ve yerel önbellekte (localStorage / SharedPreferences / SQLite / cache) sakla; çevrimdışı durumda önbellekten çalışmaya devam et.
+   - all.json içindeki "updated_at" alanını kontrol ederek yalnızca yeni güncelleme olduğunda yerel veriyi yenile.
+```
+
+</details>
+
+---
+
+<details>
+<summary><b>💻 Kod Örnekleri (JavaScript & Python)</b></summary>
+
+<br/>
+
+**JavaScript / Tarayıcı:**
 ```javascript
 const trMap = {
   "ç": "c", "Ç": "c", "ğ": "g", "Ğ": "g", "ı": "i", "İ": "i",
@@ -43,14 +117,11 @@ const normalize = (text) =>
 const res = await fetch("https://hasanbkaylan.github.io/b0ykot.api/v1/lookup.json");
 const lookup = await res.json();
 
-const marketMarkasi = "NESTLÉ"; // veya "Burger King", "Çaykur", "Şölen"
-const sonuc = lookup[normalize(marketMarkasi)];
-
-console.log(sonuc);
-// Çıktı: { name: "Nestlé", status: "boykot" }
+console.log(lookup[normalize("NESTLÉ")]);
+// { name: "Nestlé", status: "boykot" }
 ```
 
-### Python Örneği
+**Python:**
 ```python
 import re
 import unicodedata
@@ -68,18 +139,21 @@ def normalize(text: str) -> str:
     return re.sub(r"[^a-z0-9]", "", text)
 
 lookup = requests.get("https://hasanbkaylan.github.io/b0ykot.api/v1/lookup.json").json()
-
-sonuc = lookup.get(normalize("Çaykur"))
-print(sonuc)
-# Çıktı: {'name': 'Çaykur', 'status': 'boykot_degil'}
+print(lookup.get(normalize("Çaykur")))
+# {'name': 'Çaykur', 'status': 'boykot_degil'}
 ```
+
+</details>
 
 ---
 
-## Nasıl Katkı Yapılır?
+<details>
+<summary><b>🤝 Katkıda Bulunma ve Lisans</b></summary>
 
-Listeye yeni marka eklemek veya hata bildirmek için [Katkıda Bulunma Rehberi](CONTRIBUTING.md) dosyasını inceleyebilir ya da doğrudan **Issues** sekmesinden marka öneri formunu doldurabilirsiniz.
+<br/>
 
-## Lisans
+- Listeye yeni marka eklemek veya düzeltme bildirmek için [Katkıda Bulunma Rehberi](CONTRIBUTING.md) dosyasını okuyabilir ya da doğrudan [Marka Öneri Formu](https://github.com/hasanbkaylan/b0ykot.api/issues/new/choose) üzerinden talep oluşturabilirsiniz.
+- Geliştirici: **Hasan Berat Kaylan** ([@hasanbkaylan](https://github.com/hasanbkaylan))
+- Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır.
 
-Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır.
+</details>
