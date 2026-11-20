@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="184" height="36" viewBox="0 0 184 36" role="img" aria-label="Canlı Site &amp; Arama">
+  <rect width="184" height="36" rx="18" fill="#DCE2FF"/>
+  <g transform="translate(14, 9) scale(0.75)" fill="none" stroke="#001550" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="11" cy="11" r="8"/>
+    <path d="m21 21-4.3-4.3"/>
+  </g>
+  <text x="40" y="23" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#001550">Canlı Site &amp; Arama</text>
+</svg>
