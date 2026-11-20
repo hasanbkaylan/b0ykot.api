@@ -2,7 +2,7 @@
 
 <img src="assets/banner.svg" alt="b0ykot.api" width="100%" />
 
-<br/><br/>
+<br/>
 
 <p align="center">
   <a href="https://hasanbkaylan.github.io/b0ykot.api/">
