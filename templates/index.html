@@ -1259,7 +1259,7 @@
     let lookupEntries = [];
     let activeFilter = null;
 
-    fetch("./v1/all.json")
+    fetch(`./v1/all.json?t=${Date.now()}`, { cache: "no-store" })
       .then((r) => r.json())
       .then((all) => {
         document.getElementById("count-boykot").textContent = all.counts.boykot;
@@ -1272,7 +1272,7 @@
         document.getElementById("updated-date").textContent = "Aktif";
       });
 
-    fetch("./v1/lookup.json")
+    fetch(`./v1/lookup.json?t=${Date.now()}`, { cache: "no-store" })
       .then((r) => r.json())
       .then((data) => {
         lookupMap = data;
@@ -1773,7 +1773,7 @@
     async function loadHistory() {
       const body = document.getElementById("history-body");
       try {
-        const res = await fetch("./v1/history.json");
+        const res = await fetch(`./v1/history.json?t=${Date.now()}`, { cache: "no-store" });
         const data = await res.json();
         historyLoaded = true;
         body.innerHTML = "";
