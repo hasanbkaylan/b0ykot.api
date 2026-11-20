@@ -1,0 +1,33 @@
+name: Toplu Marka Önerisi
+description: Birden fazla markayı tek seferde önermek için kullanılır (Otomatik PR açılır).
+title: "[Toplu Öneri]: "
+labels: ["toplu-öneri"]
+body:
+  - type: dropdown
+    id: target
+    attributes:
+      label: Hedef Liste
+      options:
+        - boykot.txt
+        - boykotdegil.txt
+    validations:
+      required: true
+
+  - type: textarea
+    id: brands
+    attributes:
+      label: Eklenecek Markalar
+      description: Her satıra bir marka adı yazın.
+      placeholder: |
+        Marka A
+        Marka B
+    validations:
+      required: true
+
+  - type: textarea
+    id: source
+    attributes:
+      label: Kaynak / Açıklama
+      description: Üretici firma bilgisi veya kaynak linki (isteğe bağlı).
+    validations:
+      required: false
