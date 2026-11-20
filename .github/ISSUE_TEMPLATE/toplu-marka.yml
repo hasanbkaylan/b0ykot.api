@@ -3,13 +3,12 @@ description: Birden fazla markayı tek seferde önermek için kullanılır (Otom
 title: "[Toplu Öneri]: "
 labels: ["toplu-öneri"]
 body:
-  - type: dropdown
+  - type: input
     id: target
     attributes:
       label: Hedef Liste
-      options:
-        - boykot.txt
-        - boykotdegil.txt
+      description: boykot.txt veya boykotdegil.txt (Siteden otomatik doldurulur)
+      placeholder: boykot.txt
     validations:
       required: true
 
