@@ -4,9 +4,20 @@
 
 <br/>
 
-[![Canlı Web & Arama](https://img.shields.io/badge/Canlı_Site_%26_Arama-b0ykot.api-3056D3?style=for-the-badge)](https://hasanbkaylan.github.io/b0ykot.api/)
-[![Lisans](https://img.shields.io/badge/Lisans-MIT-064E24?style=for-the-badge)](LICENSE)
-[![Katkı](https://img.shields.io/badge/Marka_Öner-Issues-8C0009?style=for-the-badge)](https://github.com/hasanbkaylan/b0ykot.api/issues/new/choose)
+<p align="center">
+  <a href="https://hasanbkaylan.github.io/b0ykot.api/">
+    <img height="30" alt="JSON API" src="https://ziadoua.github.io/m3-Markdown-Badges/badges/JSON/json2.svg" />
+  </a>
+  <a href="https://github.com/hasanbkaylan/b0ykot.api/stargazers">
+    <img height="30" alt="Stars" src="https://m3-markdown-badges.vercel.app/stars/1/2/hasanbkaylan/b0ykot.api" />
+  </a>
+  <a href="https://github.com/hasanbkaylan/b0ykot.api/issues/new/choose">
+    <img height="30" alt="Issues" src="https://m3-markdown-badges.vercel.app/issues/1/2/hasanbkaylan/b0ykot.api" />
+  </a>
+  <a href="LICENSE">
+    <img height="30" alt="MIT License" src="https://ziadoua.github.io/m3-Markdown-Badges/badges/LicenceMIT/licencemit2.svg" />
+  </a>
+</p>
 
 </div>
 
@@ -99,7 +110,10 @@ Projeme "b0ykot.api" açık kaynak boykot marka listesi API'sini entegre et (vey
 
 <br/>
 
-**JavaScript / Tarayıcı:**
+<p>
+  <img height="28" alt="JavaScript" src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Javascript/javascript3.svg" />
+</p>
+
 ```javascript
 const trMap = {
   "ç": "c", "Ç": "c", "ğ": "g", "Ğ": "g", "ı": "i", "İ": "i",
@@ -121,7 +135,10 @@ console.log(lookup[normalize("NESTLÉ")]);
 // { name: "Nestlé", status: "boykot" }
 ```
 
-**Python:**
+<p>
+  <img height="28" alt="Python" src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Python/python2.svg" />
+</p>
+
 ```python
 import re
 import unicodedata
@@ -155,5 +172,14 @@ print(lookup.get(normalize("Çaykur")))
 - Listeye yeni marka eklemek veya düzeltme bildirmek için [Katkıda Bulunma Rehberi](CONTRIBUTING.md) dosyasını okuyabilir ya da doğrudan [Marka Öneri Formu](https://github.com/hasanbkaylan/b0ykot.api/issues/new/choose) üzerinden talep oluşturabilirsiniz.
 - Geliştirici: **Hasan Berat Kaylan** ([@hasanbkaylan](https://github.com/hasanbkaylan))
 - Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır.
+
+<p>
+  <a href="https://github.com/hasanbkaylan/b0ykot.api">
+    <img height="28" alt="GitHub" src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Github/github2.svg" />
+  </a>
+  <a href="LICENSE">
+    <img height="28" alt="MIT License" src="https://ziadoua.github.io/m3-Markdown-Badges/badges/LicenceMIT/licencemit2.svg" />
+  </a>
+</p>
 
 </details>
