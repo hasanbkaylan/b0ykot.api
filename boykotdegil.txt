@@ -24,6 +24,7 @@ Doğuş
 Dudi
 Eker
 Elvan
+Eszet
 Eti
 Gofgof
 Hopadan
@@ -60,6 +61,7 @@ Renax
 Sagra
 Sarıkız
 Sarıyer
+Schogetten
 Söke
 Şölen
 Şoray
@@ -70,6 +72,7 @@ Tamek
 Tarım-Kredi
 Tat
 Teatone
+Togo
 TopiTanem
 Torku
 Tukaş
