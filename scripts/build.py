@@ -4,6 +4,7 @@ import re
 import shutil
 import subprocess
 import unicodedata
+import urllib.request
 from datetime import datetime, timezone
 
 TR_ASCII_MAP = str.maketrans({
@@ -92,8 +93,132 @@ def generate_variants(name: str) -> list[str]:
     return sorted(variants)
 
 
+def fetch_github_commit_authors() -> dict[str, dict[str, str]]:
+    """GitHub API'den commit hash -> {login, avatar_url} haritasını çeker."""
+    repo = os.environ.get("GITHUB_REPOSITORY", "hasanbkaylan/b0ykot.api")
+    token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+    url = f"https://api.github.com/repos/{repo}/commits?per_page=100"
+    req = urllib.request.Request(
+        url,
+        headers={
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "b0ykot-api-builder",
+            **({"Authorization": f"Bearer {token}"} if token else {}),
+        },
+    )
+    authors: dict[str, dict[str, str]] = {}
+    try:
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        for item in data:
+            sha = item.get("sha")
+            author = item.get("author") or item.get("committer")
+            if sha and author and author.get("login"):
+                authors[sha] = {
+                    "login": author["login"],
+                    "avatar_url": author.get("avatar_url") or f"https://github.com/{author['login']}.png?size=64",
+                }
+    except Exception:
+        pass
+    return authors
+
+
+def get_commit_meta(commit_ref: str) -> tuple[str, str, str, str] | None:
+    try:
+        res = subprocess.run(
+            ["git", "show", "-s", "--format=%H%x1f%an%x1f%ae%x1f%b", commit_ref],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            check=False,
+        )
+        if res.returncode != 0 or not res.stdout.strip():
+            return None
+        parts = res.stdout.strip().split("\x1f", 3)
+        if len(parts) < 4:
+            parts.extend([""] * (4 - len(parts)))
+        return parts[0], parts[1], parts[2], parts[3]
+    except Exception:
+        return None
+
+
+def resolve_author(
+    commit_hash: str,
+    subject: str,
+    author_name: str,
+    author_email: str,
+    body: str,
+    gh_authors: dict[str, dict[str, str]],
+) -> dict[str, str]:
+    """Commit veya PR sahibinin kullanıcı adı ve avatar URL'sini bulur."""
+    candidates = [(commit_hash, author_name, author_email, body)]
+
+    # Merge commit ise PR'ın asıl commit'ini (^2) önceliklendir
+    if subject.startswith("Merge pull request #"):
+        pr_meta = get_commit_meta(f"{commit_hash}^2")
+        if pr_meta:
+            candidates.insert(0, pr_meta)
+
+    for c_hash, c_name, c_email, c_body in candidates:
+        # 1. Commit gövdesinde "Öneren: @kullanici" veya "Co-authored-by:" var mı?
+        m_oneren = re.search(r"Öneren:\s*@([A-Za-z0-9-]+)", c_body)
+        if m_oneren:
+            login = m_oneren.group(1)
+            return {
+                "name": login,
+                "login": login,
+                "avatar_url": f"https://github.com/{login}.png?size=64",
+            }
+
+        m_co = re.search(r"Co-authored-by:\s*([A-Za-z0-9-]+)\s*<", c_body, re.IGNORECASE)
+        if m_co and "github-actions" not in m_co.group(1).lower():
+            login = m_co.group(1)
+            return {
+                "name": login,
+                "login": login,
+                "avatar_url": f"https://github.com/{login}.png?size=64",
+            }
+
+        # 2. GitHub API eşleşmesi
+        gh = gh_authors.get(c_hash)
+        if gh and "github-actions" not in gh["login"].lower():
+            return {
+                "name": c_name if c_name and "github-actions" not in c_name.lower() else gh["login"],
+                "login": gh["login"],
+                "avatar_url": gh["avatar_url"],
+            }
+
+        # 3. GitHub noreply e-postasından çıkar
+        m_noreply = re.match(r"^(?:\d+\+)?([A-Za-z0-9-]+)@users\.noreply\.github\.com$", c_email.strip(), re.IGNORECASE)
+        if m_noreply and "github-actions" not in m_noreply.group(1).lower():
+            login = m_noreply.group(1)
+            return {
+                "name": c_name or login,
+                "login": login,
+                "avatar_url": f"https://github.com/{login}.png?size=64",
+            }
+
+    # 4. Merge commit başlığından ("from kullanici/branch") çıkar
+    m_merge = re.search(r"from\s+([A-Za-z0-9-]+)/", subject)
+    if m_merge and "github-actions" not in m_merge.group(1).lower():
+        login = m_merge.group(1)
+        return {
+            "name": login,
+            "login": login,
+            "avatar_url": f"https://github.com/{login}.png?size=64",
+        }
+
+    # 5. Varsayılan repo sahibi (yerel/bilinmeyen commitler için)
+    fallback_login = "hasanbkaylan"
+    clean_name = author_name if author_name and "github-actions" not in author_name.lower() else fallback_login
+    return {
+        "name": clean_name,
+        "login": fallback_login,
+        "avatar_url": f"https://github.com/{fallback_login}.png?size=64",
+    }
+
+
 def get_git_brands_at(commit_ref: str, filename: str) -> dict[str, str]:
-    """Belirli bir git commit'indeki tekilleştirilmiş marka sözlüğünü döndürür."""
     try:
         res = subprocess.run(
             ["git", "show", f"{commit_ref}:{filename}"],
@@ -111,13 +236,14 @@ def get_git_brands_at(commit_ref: str, filename: str) -> dict[str, str]:
 
 
 def build_history(limit: int = 40) -> list[dict]:
-    """Git geçmişinden tarih tarih marka ekleme/çıkarma kayıtlarını oluşturur."""
+    """Git geçmişinden tarih tarih marka ekleme/çıkarma ve yazar bilgilerini oluşturur."""
     updates: list[dict] = []
+    gh_authors = fetch_github_commit_authors()
     try:
         res = subprocess.run(
             [
                 "git", "log", f"-n{limit}",
-                "--format=%H%x1f%aI%x1f%s",
+                "--format=%H%x1f%aI%x1f%s%x1f%an%x1f%ae%x1f%b%x1e",
                 "--", "boykot.txt", "boykotdegil.txt",
             ],
             capture_output=True,
@@ -128,11 +254,16 @@ def build_history(limit: int = 40) -> list[dict]:
         if res.returncode != 0 or not res.stdout.strip():
             return updates
 
-        for line in res.stdout.strip().splitlines():
-            parts = line.split("\x1f", 2)
-            if len(parts) != 3:
+        for record in res.stdout.split("\x1e"):
+            record = record.strip()
+            if not record:
                 continue
-            commit_hash, commit_date, message = parts
+            parts = record.split("\x1f", 5)
+            if len(parts) < 5:
+                continue
+            while len(parts) < 6:
+                parts.append("")
+            commit_hash, commit_date, message, author_name, author_email, body = parts
 
             cur_b = get_git_brands_at(commit_hash, "boykot.txt")
             prev_b = get_git_brands_at(f"{commit_hash}^", "boykot.txt")
@@ -146,14 +277,18 @@ def build_history(limit: int = 40) -> list[dict]:
             d_added = sorted((cur_d[k] for k in (set(cur_d) - set(prev_d))), key=sort_key)
             d_removed = sorted((prev_d[k] for k in (set(prev_d) - set(cur_d))), key=sort_key)
 
-            # Sadece sıralama veya klon temizliği yapılan boş değişiklikleri geçmişe ekleme
             if not (b_added or b_removed or d_added or d_removed):
                 continue
+
+            author_info = resolve_author(
+                commit_hash, message, author_name, author_email, body, gh_authors
+            )
 
             updates.append({
                 "hash": commit_hash[:7],
                 "date": commit_date,
                 "message": message,
+                "author": author_info,
                 "boykot": {
                     "added": b_added,
                     "removed": b_removed,
@@ -176,7 +311,6 @@ def main():
     boykot = {k: pick_preferred_name(v) for k, v in boykot_raw.items()}
     boykot_degil = {k: pick_preferred_name(v) for k, v in degil_raw.items()}
 
-    # Çakışma kontrolü
     conflicts = set(boykot.keys()) & set(boykot_degil.keys())
     if conflicts:
         conflict_names = [f"{boykot[k]} / {boykot_degil[k]}" for k in sorted(conflicts)]
@@ -197,7 +331,6 @@ def main():
 
     os.makedirs("dist/v1", exist_ok=True)
 
-    # Temizlenmiş .txt dosyalarını dist içine kopyala
     shutil.copyfile("boykot.txt", "dist/boykot.txt")
     shutil.copyfile("boykotdegil.txt", "dist/boykotdegil.txt")
 
