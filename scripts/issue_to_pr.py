@@ -1,5 +1,4 @@
 import os
-import re
 import subprocess
 import sys
 import time
@@ -41,12 +40,18 @@ def main():
         return
 
     sections = parse_issue_sections(issue_body)
-    target_file = sections.get("Hedef Liste", "").strip()
+    target_file = sections.get("Hedef Liste", "").strip().lower()
+    if target_file in ("boykot", "boykotdegil"):
+        target_file += ".txt"
+
     brands_raw = sections.get("Eklenecek Markalar", "")
     source_note = sections.get("Kaynak / Açıklama", "").strip()
 
     if target_file not in ("boykot.txt", "boykotdegil.txt"):
-        comment_on_issue(issue_number, "Hedef liste `boykot.txt` veya `boykotdegil.txt` olmalıdır.")
+        comment_on_issue(
+            issue_number,
+            "Hedef liste `boykot.txt` veya `boykotdegil.txt` olmalıdır.",
+        )
         return
 
     other_file = "boykotdegil.txt" if target_file == "boykot.txt" else "boykot.txt"
@@ -94,7 +99,16 @@ def main():
     run_cmd(["git", "config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"])
     run_cmd(["git", "checkout", "-b", branch_name])
     run_cmd(["git", "add", target_file])
-    run_cmd(["git", "commit", "-m", f"feat: #{issue_number} toplu marka önerisi ({len(added)} marka)"])
+
+    commit_title = f"feat: #{issue_number} toplu marka önerisi ({len(added)} marka)"
+    commit_cmd = ["git", "commit", "-m", commit_title]
+    if issue_author:
+        commit_body = (
+            f"Öneren: @{issue_author}\n\n"
+            f"Co-authored-by: {issue_author} <{issue_author}@users.noreply.github.com>"
+        )
+        commit_cmd.extend(["-m", commit_body])
+    run_cmd(commit_cmd)
     run_cmd(["git", "push", "-u", "origin", branch_name])
 
     pr_lines = [
@@ -123,7 +137,10 @@ def main():
         "--body-file", str(pr_body_path),
     ])
     pr_url = pr_res.stdout.strip()
-    comment_on_issue(issue_number, f"✅ **{len(added)} marka** için otomatik Pull Request oluşturuldu: {pr_url}")
+    comment_on_issue(
+        issue_number,
+        f"✅ **{len(added)} marka** için otomatik Pull Request oluşturuldu: {pr_url}",
+    )
 
 
 if __name__ == "__main__":
