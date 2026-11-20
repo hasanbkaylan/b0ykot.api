@@ -1,4 +1,4 @@
-# b0ykot API
+# b0ykot.api
 
 Türkiye'deki market ve e-ticaret ürünlerinde kullanılan markalar için topluluk destekli, açık kaynaklı **boykot / alternatif marka** veri tabanı ve ücretsiz Statik JSON API'si.
 
@@ -10,17 +10,17 @@ CORS dostudur; tarayıcı eklentilerinden, mobil uygulamalardan ve backend servi
 
 | Format | Adres | Açıklama |
 | :--- | :--- | :--- |
-| **JSON** | `https://KULLANICI_ADIN.github.io/b0ykot-api/v1/all.json` | Tüm markalar ve güncelleme tarihi |
-| **JSON** | `https://KULLANICI_ADIN.github.io/b0ykot-api/v1/lookup.json` | Hızlı arama sözlüğü (normalize edilmiş anahtarlar) |
-| **JSON** | `https://KULLANICI_ADIN.github.io/b0ykot-api/v1/boykot.json` | Sadece boykot markaları |
-| **JSON** | `https://KULLANICI_ADIN.github.io/b0ykot-api/v1/boykotdegil.json` | Sadece boykot olmayan markalar |
-| **TXT** | `https://KULLANICI_ADIN.github.io/b0ykot-api/boykot.txt` | Ham boykot listesi |
-| **TXT** | `https://KULLANICI_ADIN.github.io/b0ykot-api/boykotdegil.txt` | Ham boykot değil listesi |
-| **TXT** | `https://KULLANICI_ADIN.github.io/b0ykot-api/v1/boykot-variants.txt` | Otomatik üretilmiş yazım varyasyonlu liste |
+| **JSON** | `https://hasanbkaylan.github.io/b0ykot.api/v1/all.json` | Tüm markalar ve güncelleme tarihi |
+| **JSON** | `https://hasanbkaylan.github.io/b0ykot.api/v1/lookup.json` | Hızlı arama sözlüğü (normalize edilmiş anahtarlar) |
+| **JSON** | `https://hasanbkaylan.github.io/b0ykot.api/v1/boykot.json` | Sadece boykot markaları |
+| **JSON** | `https://hasanbkaylan.github.io/b0ykot.api/v1/boykotdegil.json` | Sadece boykot olmayan markalar |
+| **TXT** | `https://hasanbkaylan.github.io/b0ykot.api/boykot.txt` | Ham boykot listesi |
+| **TXT** | `https://hasanbkaylan.github.io/b0ykot.api/boykotdegil.txt` | Ham boykot değil listesi |
+| **TXT** | `https://hasanbkaylan.github.io/b0ykot.api/v1/boykot-variants.txt` | Otomatik üretilmiş yazım varyasyonlu liste |
 
 ---
 
-## Yazım Farklılıklarını (Nestlé / Nestle, Burger King / Burger-King) Yakalama
+## Yazım Farklılıklarını Yakalama
 
 Market verilerinde marka isimleri bazen aksanlı (`Nestlé`), bazen tireli (`Burger-King`), bazen bitişik (`BurgerKing`) gelebilir. Bunu çözmek için `/v1/lookup.json` dosyasını kullanabilirsiniz.
 
@@ -36,7 +36,7 @@ const normalize = (text) =>
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]/g, "");
 
-const res = await fetch("https://KULLANICI_ADIN.github.io/b0ykot-api/v1/lookup.json");
+const res = await fetch("https://hasanbkaylan.github.io/b0ykot.api/v1/lookup.json");
 const lookup = await res.json();
 
 const marketMarkasi = "NESTLÉ"; // veya "Burger King", "Domino’s"
@@ -58,7 +58,7 @@ def normalize(text: str) -> str:
     text = "".join(c for c in text if not unicodedata.combining(c))
     return re.sub(r"[^a-z0-9]", "", text)
 
-lookup = requests.get("https://KULLANICI_ADIN.github.io/b0ykot-api/v1/lookup.json").json()
+lookup = requests.get("https://hasanbkaylan.github.io/b0ykot.api/v1/lookup.json").json()
 
 sonuc = lookup.get(normalize("Burger King"))
 print(sonuc)
@@ -70,3 +70,7 @@ print(sonuc)
 ## Nasıl Katkı Yapılır?
 
 Listeye yeni marka eklemek veya hata bildirmek için [Katkıda Bulunma Rehberi](CONTRIBUTING.md) dosyasını inceleyebilir ya da doğrudan **Issues** sekmesinden marka öneri formunu doldurabilirsiniz.
+
+## Lisans
+
+Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır.
